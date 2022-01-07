@@ -30,19 +30,14 @@ namespace Tcp.Server.Servers
         #endregion
 
         #region Private methods
-        private void CleanReadBuffer(TcpClient client)
-        {
-            var buffer = new byte[64];
-            var stream = client.GetStream();
-            while (stream.DataAvailable)
-                stream.Read(buffer, 0, buffer.Length);
-        }
-
         private void ManageNewClient(TcpClient client)
         {
             lock (_lock) ConnectedClients.Add(client);
 
-            CleanReadBuffer(client);
+            var buffer = new byte[128];
+            var stream = client.GetStream();
+            while (stream.DataAvailable)
+                stream.Read(buffer, 0, buffer.Length);
 
             if (ConnectedClients.Count > 1)
                 Broadcast($"Client {ConnectedClients.Count - 1} has connected to server \r\n", client);
@@ -80,15 +75,13 @@ namespace Tcp.Server.Servers
                 {
                     var buffer = new byte[1024];
                     var stream = client.GetStream();
-                    if (stream.DataAvailable)
+                    var byte_count = await stream.ReadAsync(buffer, 0, buffer.Length);
+                    if (byte_count != 0)
                     {
-                        var byte_count = await stream.ReadAsync(buffer, 0, buffer.Length);
-                        if (byte_count != 0)
-                        {
-                            string data = Encoding.ASCII.GetString(buffer, 0, byte_count);
-                            Broadcast(data, client);
-                        }
+                        string data = Encoding.ASCII.GetString(buffer, 0, byte_count);
+                        Broadcast(data, client);
                     }
+
                 }
             }
             catch (IOException)

@@ -10,6 +10,8 @@ namespace telnet_chat_server
         {
             IServer server = new BroadcastChatServer(IPAddress.Any);
             server.StartListening();
+
+            while (true) { }
         }
     }
 }
