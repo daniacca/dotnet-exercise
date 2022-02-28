@@ -1,6 +1,7 @@
 using Xunit;
 using Common.Utils.ExtensionMethods;
 using System;
+using Utils.ExtensionMethods.IEnumerable;
 
 namespace Common.Utils.Tests
 {

@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Common.Utils.ExtensionMethods
+namespace Utils.ExtensionMethods.IEnumerable
 {
-    public static class IEnumerableExtensions
+    public static class FlattenExtension
     {
         private static bool IsIterable(Type type) => type.IsArray || typeof(IEnumerable<>).IsAssignableTo(type);
 
         private static void Flatten<T>(IEnumerable<object> toBeFlatten, List<T> accumulator)
         {
-            foreach(var obj in toBeFlatten)
+            foreach (var obj in toBeFlatten)
             {
                 if (obj is T[] objArray) accumulator.AddRange(objArray);
                 else if (obj is T item) accumulator.Add(item);
-                else if (IsIterable(obj.GetType())) 
+                else if (IsIterable(obj.GetType()))
                     Flatten((object[])obj, accumulator);
             }
         }
-        
+
         /// <summary>
         /// Flatten a generic IEnumerable of object to a single array of element
         /// </summary>
