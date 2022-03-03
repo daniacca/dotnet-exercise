@@ -55,13 +55,13 @@ namespace Common.Utils.Tests
         }
 
         [Fact]
-        public void Test_Random_SubSet()
+        public void Test_Random_SubSet_Should_Return_True()
         {
             var random = new Random();
-            var superSet = Enumerable.Range(0, 1000).Select((e, i) => random.Next()).ToList();
+            var superSet = Enumerable.Range(0, 1000).Select(_ => random.Next()).ToList();
 
             IEnumerable<int> subSet = null;
-            var toTake = random.Next(1000);
+            var toTake = random.Next(superSet.Count);
             foreach(var sub in superSet.SubArrays())
             {
                 if (toTake-- == 0)
@@ -73,6 +73,16 @@ namespace Common.Utils.Tests
 
             Assert.NotNull(subSet);
             Assert.True(subSet.IsSubSet(superSet));
+        }
+
+        [Fact]
+        public void Test_Random_SubSet_Should_Return_False()
+        {
+            var random = new Random();
+            var superSet = Enumerable.Range(0, 1000).Select(_ => random.Next()).ToList();
+            var subSet = Enumerable.Range(0, 500).Select(_ => random.Next()).ToList();
+
+            Assert.False(subSet.IsSubSet(superSet));
         }
     }
 }

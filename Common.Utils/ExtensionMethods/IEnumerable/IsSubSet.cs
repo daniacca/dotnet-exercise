@@ -6,6 +6,8 @@ namespace Utils.ExtensionMethods.IEnumerable
 {
     public static class IsSubSetExtensions
     {
+        private static bool IsSub<T>(HashSet<T> sub, HashSet<T> sup) => sub.IsSubsetOf(sup);
+
         /// <summary>
         /// Returns true if sequence is a subset of superSet param, false otherwise
         /// </summary>
@@ -24,11 +26,7 @@ namespace Utils.ExtensionMethods.IEnumerable
             if (sequence.Count() == superSet.Count())
                 return sequence.SequenceEqual(superSet);
 
-            foreach (var element in sequence)
-                if (!superSet.Contains(element))
-                    return false;
-
-            return true;
+            return IsSub(new HashSet<T>(sequence), new HashSet<T>(superSet));
         }
     }
 }

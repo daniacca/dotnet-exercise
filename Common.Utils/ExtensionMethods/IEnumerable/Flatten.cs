@@ -24,11 +24,11 @@ namespace Utils.ExtensionMethods.IEnumerable
         /// <typeparam name="TOut">the type of element to be flatted</typeparam>
         /// <param name="sequence">the nested array to be flatted</param>
         /// <returns>a flatted array of type <typeparamref name="TOut"/></returns>
-        public static TOut[] Flatten<TOut>(this IEnumerable<object> sequence)
+        public static IEnumerable<TOut> Flatten<TOut>(this IEnumerable<object> sequence)
         {
             var flatted = new List<TOut>();
             Flatten(sequence, flatted);
-            return flatted.ToArray();
+            return flatted;
         }
     }
 }

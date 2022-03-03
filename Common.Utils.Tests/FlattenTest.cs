@@ -1,7 +1,7 @@
 using Xunit;
-using Common.Utils.ExtensionMethods;
 using System;
 using Utils.ExtensionMethods.IEnumerable;
+using System.Linq;
 
 namespace Common.Utils.Tests
 {
@@ -50,10 +50,9 @@ namespace Common.Utils.Tests
 
             // Assert
             Assert.NotNull(flatted);
-            Assert.Equal(9, flatted.Length);
-            Assert.Equal(typeof(int[]), flatted.GetType());
-            var exptected = new int[] { 1, 2, 3, 4, 5, 6, 9, 10, 12 };
-            Assert.Equal(exptected, flatted);
+            Assert.Equal(9, flatted.Count());
+            var expected = new int[] { 1, 2, 3, 4, 5, 6, 9, 10, 12 };
+            Assert.True(expected.SequenceEqual(flatted));
         }
 
         [Fact]
@@ -67,10 +66,9 @@ namespace Common.Utils.Tests
 
             // Assert
             Assert.NotNull(flatted);
-            Assert.Equal(toBeFlatted.Length, flatted.Length);
-            Assert.Equal(typeof(int[]), flatted.GetType());
-            var exptected = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-            Assert.Equal(exptected, flatted);
+            Assert.Equal(toBeFlatted.Length, flatted.Count());
+            var expected = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            Assert.True(expected.SequenceEqual(flatted));
         }
 
         [Fact]
@@ -84,10 +82,9 @@ namespace Common.Utils.Tests
 
             // Assert
             Assert.NotNull(flatted);
-            Assert.Equal(7, flatted.Length);
-            Assert.Equal(typeof(int[]), flatted.GetType()); 
-            var expectedResult = new int[] { 1, 2, 3, 4, 7, 8, 10 };
-            Assert.Equal(expectedResult, flatted);
+            Assert.Equal(7, flatted.Count());
+            var expected = new int[] { 1, 2, 3, 4, 7, 8, 10 };
+            Assert.True(expected.SequenceEqual(flatted));
         }
 
         [Fact]
@@ -129,8 +126,7 @@ namespace Common.Utils.Tests
 
             // Assert
             Assert.NotNull(flatted);
-            Assert.Equal(toBeFlatted.Length, flatted.Length);
-            Assert.Equal(typeof(int[]), flatted.GetType());
+            Assert.Equal(toBeFlatted.Length, flatted.Count());
         }
 
         [Theory]
@@ -151,9 +147,8 @@ namespace Common.Utils.Tests
 
             // Assert
             Assert.NotNull(flatted);
-            Assert.Equal(length, flatted.Length);
-            Assert.Equal(typeof(int[]), flatted.GetType());
-            Assert.Equal(expected, flatted);
+            Assert.Equal(length, flatted.Count());
+            Assert.True(expected.SequenceEqual(flatted));
         }
     }
 }
