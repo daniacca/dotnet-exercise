@@ -1,12 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Utils.ExtensionMethods.IEnumerable
 {
     public static class IsSubSetExtensions
     {
-        private static bool IsSub<T>(HashSet<T> sub, HashSet<T> sup) => sub.IsSubsetOf(sup);
+        private static bool? SequenceCheck<T>(IEnumerable<T> sequence, IEnumerable<T> superSet)
+        {
+            if (!sequence.Any() && !superSet.Any())
+                return true;
+
+            if (sequence.Count() > superSet.Count())
+                return false;
+
+            return null;
+        }
 
         /// <summary>
         /// Returns true if sequence is a subset of superSet param, false otherwise
@@ -15,18 +23,29 @@ namespace Utils.ExtensionMethods.IEnumerable
         /// <param name="sequence"></param>
         /// <param name="superSet"></param>
         /// <returns></returns>
-        public static bool IsSubSet<T>(this IEnumerable<T> sequence, IEnumerable<T> superSet)
+        public static bool IsSubset<T>(this IEnumerable<T> sequence, IEnumerable<T> superSet)
         {
-            if (!sequence.Any() && !superSet.Any())
-                return true;
+            var check = SequenceCheck(sequence, superSet);
+            if (check is not null)
+                return check.Value;
 
-            if (sequence.Count() > superSet.Count())
-                return false;
+            return new HashSet<T>(sequence).IsSubsetOf(new HashSet<T>(superSet));
+        }
 
-            if (sequence.Count() == superSet.Count())
-                return sequence.SequenceEqual(superSet);
+        /// <summary>
+        /// Returns true if sequence is a subset of superSet param, false otherwise
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sequence"></param>
+        /// <param name="superSet"></param>
+        /// <returns></returns>
+        public static bool IsProperSubset<T>(this IEnumerable<T> sequence, IEnumerable<T> superSet)
+        {
+            var check = SequenceCheck(sequence, superSet);
+            if (check is not null)
+                return check.Value;
 
-            return IsSub(new HashSet<T>(sequence), new HashSet<T>(superSet));
+            return new HashSet<T>(sequence).IsProperSubsetOf(new HashSet<T>(superSet));
         }
     }
 }

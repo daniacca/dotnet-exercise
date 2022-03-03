@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Common.Utils.ExtensionMethods
 {
     public static class GetSubArraysExtension
     {
-        private static IEnumerable<IEnumerable<T>> GetSubArrays<T>(List<T> list, int currIndex)
+        private static IEnumerable<IEnumerable<T>> GenerateSubArrays<T>(List<T> list, int currIndex)
         {
             if (currIndex == list.Count)
                 yield return Enumerable.Empty<T>();
@@ -41,7 +40,7 @@ namespace Common.Utils.ExtensionMethods
         {
             var list = sequence.ToList();
             for (int index = 0; index < list.Count; index++)
-                foreach (var subArray in GetSubArrays(list, index))
+                foreach (var subArray in GenerateSubArrays(list, index))
                     yield return subArray;
         }
 

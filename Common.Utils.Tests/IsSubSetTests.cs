@@ -15,7 +15,7 @@ namespace Common.Utils.Tests
             var superSet = new List<int> { 1, 2, 3, 4 };
             var subSet = new List<int> { 1, 2, 3, 4 };
 
-            Assert.True(subSet.IsSubSet(superSet));
+            Assert.True(subSet.IsSubset(superSet));
         }
 
         [Fact]
@@ -24,7 +24,7 @@ namespace Common.Utils.Tests
             var superSet = new List<int> { };
             var subSet = new List<int> { };
 
-            Assert.True(subSet.IsSubSet(superSet));
+            Assert.True(subSet.IsSubset(superSet));
         }
 
         [Fact]
@@ -33,7 +33,7 @@ namespace Common.Utils.Tests
             var superSet = new List<int> { 5, 4, 2, 11, 23 };
             var subSet = new List<int> { 5, 11, 88, 99 };
 
-            Assert.False(subSet.IsSubSet(superSet));
+            Assert.False(subSet.IsSubset(superSet));
         }
 
         [Fact]
@@ -42,7 +42,7 @@ namespace Common.Utils.Tests
             var superSet = new List<int> { 5, 4, 2, 11, 23 };
             var subSet = new List<int> { 5, 4, 2, 11, 23, 99 };
 
-            Assert.False(subSet.IsSubSet(superSet));
+            Assert.False(subSet.IsSubset(superSet));
         }
 
         [Fact]
@@ -51,7 +51,7 @@ namespace Common.Utils.Tests
             var superSet = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
             var subSet = new List<int> { 1, 5, 10 };
 
-            Assert.True(subSet.IsSubSet(superSet));
+            Assert.True(subSet.IsSubset(superSet));
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace Common.Utils.Tests
             }
 
             Assert.NotNull(subSet);
-            Assert.True(subSet.IsSubSet(superSet));
+            Assert.True(subSet.IsSubset(superSet));
         }
 
         [Fact]
@@ -82,7 +82,7 @@ namespace Common.Utils.Tests
             var superSet = Enumerable.Range(0, 1000).Select(_ => random.Next()).ToList();
             var subSet = Enumerable.Range(0, 500).Select(_ => random.Next()).ToList();
 
-            Assert.False(subSet.IsSubSet(superSet));
+            Assert.False(subSet.IsSubset(superSet));
         }
     }
 }

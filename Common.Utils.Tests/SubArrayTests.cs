@@ -15,7 +15,7 @@ namespace Common.Utils.Tests
             var subArrays = input.SubArrays().ToList();
 
             Assert.True(subArrays.Count == 10);
-            Assert.All(subArrays, arr => Assert.True(arr.IsSubSet(input)));
+            Assert.All(subArrays, arr => Assert.True(arr.IsSubset(input)));
         }
 
         [Fact]
@@ -25,7 +25,7 @@ namespace Common.Utils.Tests
             var subArrays = input.SubArraysLinq().ToList();
 
             Assert.True(subArrays.Count == 10);
-            Assert.All(subArrays, arr => Assert.True(arr.IsSubSet(input)));
+            Assert.All(subArrays, arr => Assert.True(arr.IsSubset(input)));
         }
 
         [Theory]
@@ -38,7 +38,7 @@ namespace Common.Utils.Tests
             var subArrays = input.SubArrays().ToList();
 
             Assert.True(subArrays.Count > 0);
-            Assert.All(subArrays, arr => Assert.True(arr.IsSubSet(input)));
+            Assert.All(subArrays, arr => Assert.True(arr.IsSubset(input)));
         }
 
         [Theory]
@@ -51,7 +51,7 @@ namespace Common.Utils.Tests
             var subArrays = input.SubArraysLinq().ToList();
 
             Assert.True(subArrays.Count > 0);
-            Assert.All(subArrays, arr => Assert.True(arr.IsSubSet(input)));
+            Assert.All(subArrays, arr => Assert.True(arr.IsSubset(input)));
         }
 
         [Theory]
