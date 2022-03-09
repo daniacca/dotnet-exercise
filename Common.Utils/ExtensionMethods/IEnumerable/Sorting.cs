@@ -15,7 +15,7 @@ namespace Utils.ExtensionMethods.IEnumerable
 
     public static class SortingExtensions
     {
-        private static void swap<T>(T[] arr, int i, int j)
+        private static void Swap<T>(T[] arr, int i, int j)
         {
             var temp = arr[i];
             arr[i] = arr[j];
@@ -80,9 +80,9 @@ namespace Utils.ExtensionMethods.IEnumerable
 
             T[] MergeSort(T[] array)
             {
-                if (array.Length < 2) 
+                if (array.Length < 2)
                     return array;
-                
+
                 int half = array.Length / 2;
                 var left = array.Skip(0).Take(half).ToArray();
                 var rigth = array.Skip(half).ToArray();
@@ -95,27 +95,19 @@ namespace Utils.ExtensionMethods.IEnumerable
 
         private static IEnumerable<T> BubbleSort<T>(this IEnumerable<T> sequence, Func<T, T, int> comparer)
         {
-            static (T a, T b) Swap(T a, T b) => (b, a);
-
-            IEnumerable<T> Loop(T[] arr, int n)
+            IEnumerable<T> Bubble(T[] arr, int n)
             {
                 if (n == 1) return arr;
 
                 for (int i = 0; i < n - 1; i++)
-                {
                     if (comparer(arr[i], arr[i + 1]) > 0)
-                    {
-                        var (a, b) = Swap(arr[i], arr[i + 1]);
-                        arr[i] = a;
-                        arr[i + 1] = b;
-                    }
-                }
+                        Swap(arr, i, i + 1);
 
-                return Loop(arr, n - 1);
+                return Bubble(arr, n - 1);
             }
 
             var array = sequence.ToArray();
-            return Loop(array, array.Length);
+            return Bubble(array, array.Length);
         }
 
         private static IEnumerable<T> QuickSort<T>(this IEnumerable<T> sequence, Func<T, T, int> comparer)
@@ -130,17 +122,17 @@ namespace Utils.ExtensionMethods.IEnumerable
                     if (comparer(arr[j], pivot) < 0)
                     {
                         i++;
-                        swap(arr, i, j);
+                        Swap(arr, i, j);
                     }
                 }
 
-                swap(arr, i + 1, high);
+                Swap(arr, i + 1, high);
                 return i + 1;
             }
 
             void quick(T[] arr, int low, int high)
             {
-                if(low < high)
+                if (low < high)
                 {
                     var pi = partition(arr, low, high);
                     quick(arr, low, pi - 1);
@@ -172,7 +164,7 @@ namespace Utils.ExtensionMethods.IEnumerable
                 // If largest is not root
                 if (largest != i)
                 {
-                    swap(arr, i, largest);
+                    Swap(arr, i, largest);
                     heapify(arr, n, largest);
                 }
             }
@@ -187,8 +179,8 @@ namespace Utils.ExtensionMethods.IEnumerable
                 for (int i = n - 1; i > 0; i--)
                 {
                     // Move current root to end
-                    swap(arr, 0, i);
-                    
+                    Swap(arr, 0, i);
+
                     // call max heapify on the reduced heap
                     heapify(arr, i, 0);
                 }
