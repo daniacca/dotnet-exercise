@@ -181,7 +181,7 @@ namespace Utils.ExtensionMethods.IEnumerable
                     // Move current root to end
                     Swap(arr, 0, i);
 
-                    // call max heapify on the reduced heap
+                    // Call max heapify on the reduced heap
                     heapify(arr, i, 0);
                 }
             }
@@ -191,6 +191,21 @@ namespace Utils.ExtensionMethods.IEnumerable
             return array;
         }
 
+        /// <summary>
+        /// Sort the collection, using the specified strategy and using
+        /// the comparer logic 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sequence"></param>
+        /// <param name="strategy">specifies which sorting algorithm to use</param>
+        /// <param name="comparer">
+        ///     function that gives the logic for comparing two element of the sequence.
+        ///     (<typeparamref name="T"/> A, <typeparamref name="T"/> B) should return: 
+        ///     1  if A > B,
+        ///     0  if A = B,
+        ///     -1 if A < B
+        /// </param>
+        /// <returns>the sorted collection</returns>
         public static IEnumerable<T> Sort<T>(this IEnumerable<T> sequence, SortingStrategy strategy, Func<T, T, int> comparer)
         {
             return strategy switch
