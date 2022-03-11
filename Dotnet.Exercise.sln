@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ChatServer", "ChatServer", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utils.Tests", "Common.Utils.Tests\Utils.Tests.csproj", "{3112377D-401A-4DD1-A24E-6E47C29CE395}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils.Benchmark", "Utils.Benchmark\Utils.Benchmark.csproj", "{7F96589B-55B1-4AC9-9A53-515FD82CB3C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Utils.Benchmark\Benchmark.csproj", "{7F96589B-55B1-4AC9-9A53-515FD82CB3C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
