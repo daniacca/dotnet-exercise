@@ -1,20 +1,20 @@
-﻿namespace DataStructure.BST
-{
-    public interface INode<T>
-    {
-        T Data { get; set; }
-    }
+﻿using DataStructure.Interfaces;
 
+namespace DataStructure.Tree
+{
     public interface IBinaryTreeNode<T> : INode<T>
     {
         IBinaryTreeNode<T> Left { get; set; }
+
         IBinaryTreeNode<T> Right { get; set; }
     }
  
     public class BinaryTreeNode<T> : IBinaryTreeNode<T>
     {
         public T Data { get; set; }
+
         public IBinaryTreeNode<T> Left { get; set; }
+
         public IBinaryTreeNode<T> Right { get; set; }
 
         public BinaryTreeNode()

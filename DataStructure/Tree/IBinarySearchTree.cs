@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DataStructure.BST
+namespace DataStructure.Tree
 {
     public enum TraverseOrder
     {
@@ -12,8 +12,6 @@ namespace DataStructure.BST
 
     public interface ITree<T>
     {
-        IBinaryTreeNode<T> Root { get; }
-
         int Depth { get; }
     }
 
@@ -29,11 +27,11 @@ namespace DataStructure.BST
         
         void Remove(T value);
         
-        IBinaryTreeNode<T> Find(T value);
+        bool Contains(T value);
         
         void Traverse(Action<T> action, TraverseOrder order = TraverseOrder.InOrder);
         
-        IEnumerable<T> Traverse(TraverseOrder order = TraverseOrder.InOrder);
+        IEnumerable<T> Flatten(TraverseOrder order = TraverseOrder.InOrder);
 
         void Clear();
     }

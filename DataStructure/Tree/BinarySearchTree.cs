@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DataStructure.BST
+namespace DataStructure.Tree
 {
     public class BinarySearchTree<T> : IBinarySearchTree<T>
     {
-        public IBinaryTreeNode<T> Root { get; private set; } = null;
+        IBinaryTreeNode<T> Root { get; set; } = null;
 
         public T Min => MinValue(Root);
 
@@ -26,12 +26,6 @@ namespace DataStructure.BST
             Comparer = comparer;
             Root = new BinaryTreeNode<T>(value);
         }
-
-        public BinarySearchTree(Func<T, T, int> comparer, IBinaryTreeNode<T> root)
-        {
-            Comparer = comparer;
-            Root = root;
-        }
         #endregion
 
         #region Public method
@@ -44,7 +38,8 @@ namespace DataStructure.BST
             }
 
             var before = FindBefore(value);
-            if (before is null) return false;
+            if (before is null) 
+                return false;
 
             var newNode = new BinaryTreeNode<T>(value);
             if (Comparer(value, before.Data) < 0)
@@ -66,14 +61,14 @@ namespace DataStructure.BST
             Root = Remove(Root, value);
         }
 
-        public IBinaryTreeNode<T> Find(T value)
+        public bool Contains(T value)
         {
-            IBinaryTreeNode<T> Loop(IBinaryTreeNode<T> currentNode)
+            bool Loop(IBinaryTreeNode<T> currentNode)
             {
                 if (currentNode is null)
-                    return null;
+                    return false;
                 else if (Comparer(value, currentNode.Data) == 0)
-                    return currentNode;
+                    return true;
                 else if (Comparer(value, currentNode.Data) < 0)
                     return Loop(currentNode.Left);
                 else
@@ -120,7 +115,7 @@ namespace DataStructure.BST
             else PreOrder(Root);
         }
 
-        public IEnumerable<T> Traverse(TraverseOrder order = TraverseOrder.InOrder)
+        public IEnumerable<T> Flatten(TraverseOrder order = TraverseOrder.InOrder)
         {
             IEnumerable<T> PreOrder(IBinaryTreeNode<T> parent)
             {
@@ -188,7 +183,6 @@ namespace DataStructure.BST
         private IBinaryTreeNode<T> FindBefore(T value)
         {
             IBinaryTreeNode<T> before = null, after = Root;
-
             while (after != null)
             {
                 before = after;
@@ -217,10 +211,7 @@ namespace DataStructure.BST
                 if (parent.Right is null)
                     return parent.Left;
 
-                // node with two children: Get the inorder successor (smallest in the right subtree)  
                 parent.Data = MinValue(parent.Right);
-
-                // Delete the inorder successor  
                 parent.Right = Remove(parent.Right, parent.Data);
             }
 
