@@ -18,7 +18,7 @@ namespace DataStructure.Tests
         public void List_Random_Test()
         {
             var testSequence = RandomSequence.ToList();
-            var list = new SimpleLinkedList<int>();
+            var list = new SinglyLinkedList<int>();
 
             Assert.Equal(0, list.Count);
 
@@ -39,7 +39,7 @@ namespace DataStructure.Tests
         public void List_Simple_Find_Test()
         {
             var testSequence = ProgressiveSequence.ToList();
-            var list = new SimpleLinkedList<int> { testSequence };
+            var list = new SinglyLinkedList<int> { testSequence };
 
             Assert.Equal(10, list.Count);
             var filter = list.Find(x => x > 5).ToList();
@@ -51,7 +51,7 @@ namespace DataStructure.Tests
         public void List_Simple_Remove_Test()
         {
             var testSequence = ProgressiveSequence.ToList();
-            var list = new SimpleLinkedList<int> { testSequence };
+            var list = new SinglyLinkedList<int> { testSequence };
 
             Assert.Equal(10, list.Count);
             Assert.True(list.Remove(10)); // Remove first element - Head
@@ -67,7 +67,7 @@ namespace DataStructure.Tests
         public void List_Condition_Remove_Test()
         {
             var testSequence = ProgressiveSequence.ToList();
-            var list = new SimpleLinkedList<int> { testSequence };
+            var list = new SinglyLinkedList<int> { testSequence };
 
             var deleted = list.Remove(x => x > 3 && x < 8);
             Assert.Equal(4, deleted);
@@ -79,7 +79,7 @@ namespace DataStructure.Tests
         public void List_Contains_Test()
         {
             var testSequence = ProgressiveSequence.ToList();
-            var list = new SimpleLinkedList<int> { testSequence };
+            var list = new SinglyLinkedList<int> { testSequence };
 
             Assert.True(list.Contains(6));
             var deleted = list.Remove(x => x > 3 && x < 8);
@@ -90,7 +90,7 @@ namespace DataStructure.Tests
         public void List_Get_Test()
         {
             var testSequence = ProgressiveSequence.ToList();
-            var list = new SimpleLinkedList<int> { testSequence };
+            var list = new SinglyLinkedList<int> { testSequence };
 
             Assert.Equal(4, list[6]);
             Assert.Equal(1, list[9]);
@@ -104,7 +104,7 @@ namespace DataStructure.Tests
         public void List_Add_Test()
         {
             var random = new Random();
-            var list = new SimpleLinkedList<int>(2);
+            var list = new SinglyLinkedList<int>(2);
 
             Assert.Equal(1, list.Count);
             Assert.Equal(2, list[0]);
@@ -119,10 +119,11 @@ namespace DataStructure.Tests
         public void List_Stress_Test()
         {
             var testSequence = RandomSequence5K.ToList();
-            var list = new SimpleLinkedList<int>();
+            var list = new SinglyLinkedList<int>();
             list.Add(testSequence);
 
-            Assert.False(list.Contains(101));
+            // this asserts will force to traverse all the list element
+            Assert.DoesNotContain(101, list);
 
             var empty = list.Find(x => x > 100);
             Assert.Empty(empty);

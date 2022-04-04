@@ -4,24 +4,28 @@ using System.Collections.Generic;
 
 namespace DataStructure.List
 {
-    public class SimpleLinkedList<T> : IEnumerable<T>
+    public class SinglyLinkedList<T> : IEnumerable<T>, ICollection<T>
     {
         IListNode<T> Head { get; set; } = null;
 
         public int Count { get; private set; } = 0;
 
+        IListNode<T> Tail => GetNode(Count - 1);
+
+        public bool IsReadOnly => false;
+
         public T this[int index] => Get(index);
 
-        public SimpleLinkedList()
+        public SinglyLinkedList()
         { }
 
-        public SimpleLinkedList(T head)
+        public SinglyLinkedList(T head)
         {
             Head = new ListNode<T>(head);
             Count = 1;
         }
 
-        public SimpleLinkedList(IEnumerable<T> anotherList)
+        public SinglyLinkedList(IEnumerable<T> anotherList)
         {
             Add(anotherList);
         }
@@ -29,6 +33,12 @@ namespace DataStructure.List
         public void Add(T value)
         {
             Head = new ListNode<T>(value, Head);
+            Count++;
+        }
+
+        public void AddAtTail(T value)
+        {
+            Tail.Next = new ListNode<T>(value);
             Count++;
         }
 
@@ -40,65 +50,55 @@ namespace DataStructure.List
 
         public bool Remove(T value)
         {
-            // Check if we have to delete the Head
-            if(Head.Data.Equals(value))
-            {
-                Head = Head.Next;
-                Count--;
-                return true;
-            }    
+            if (Head is null)
+                return false;
 
-            // Iterate over the list
-            IListNode<T> prev, actual = Head;
-            while (actual.Next is not null)
-            {
-                prev = actual;
-                actual = actual.Next;
-
-                if (actual.Data.Equals(value))
-                {
-                    prev.Next = actual.Next;
-                    Count--;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public int Remove(Func<T, bool> condition)
-        {
             int deleted = 0;
-
-            if (condition(Head.Data))
+            while (Head.Data.Equals(value))
             {
                 Head = Head.Next;
                 deleted++;
             }
 
-            bool hasDeleted;
-            do
+            var actual = Head;
+            while (actual is not null)
             {
-                hasDeleted = false;
-                
-                IListNode<T> prev, actual = Head;
-                while (actual.Next is not null)
+                while (actual.Next is not null && actual.Next.Data.Equals(value))
                 {
-                    prev = actual;
-                    actual = actual.Next;
-
-                    if (condition(actual.Data))
-                    {
-                        prev.Next = actual.Next;
-                        hasDeleted = true;
-                        break;
-                    }
+                    actual.Next = actual.Next?.Next;
+                    deleted++;
                 }
 
-                if (hasDeleted) 
-                    deleted++;
+                actual = actual.Next;
             }
-            while (hasDeleted);
+
+            Count -= deleted;
+            return deleted > 0;
+        }
+
+        public int Remove(Func<T, bool> condition)
+        {
+            if (Head is null)
+                return 0;
+
+            int deleted = 0;
+            while (condition(Head.Data))
+            {
+                Head = Head.Next;
+                deleted++;
+            }
+
+            var actual = Head;
+            while (actual is not null)
+            {
+                while (actual.Next is not null && condition(actual.Next.Data))
+                {
+                    actual.Next = actual.Next?.Next;
+                    deleted++;
+                }
+
+                actual = actual.Next;
+            }
 
             Count -= deleted;
             return deleted;
@@ -171,12 +171,35 @@ namespace DataStructure.List
             return list;
         }
 
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            int i = arrayIndex;
+            var current = Head;
+            while (current is not null)
+            {
+                array[i++] = current.Data;
+                current = current.Next;
+            }
+        }
+
+        public void Reverse()
+        {
+            IListNode<T> prev = null, current = Head;
+            while (current is not null)
+            {
+                var next = current.Next;
+                current.Next = prev;
+                prev = current;
+                current = next;
+            }
+        }
+
         public IEnumerator<T> GetEnumerator()
         {
             return Traverse().GetEnumerator();
         }
 
-        private IEnumerable<T> Traverse()
+        IEnumerable<T> Traverse()
         {
             var actual = Head;
             while (actual is not null)
@@ -193,12 +216,17 @@ namespace DataStructure.List
             return GetEnumerator();
         }
 
-        private T Get(int i)
+        T Get(int i)
         {
-            T GetElement(IListNode<T> current, int index)
+            return GetNode(i).Data;
+        }
+
+        IListNode<T> GetNode(int i)
+        {
+            IListNode<T> GetElement(IListNode<T> current, int index)
             {
                 if (index == i)
-                    return current.Data;
+                    return current;
 
                 return GetElement(current.Next, index + 1);
             }

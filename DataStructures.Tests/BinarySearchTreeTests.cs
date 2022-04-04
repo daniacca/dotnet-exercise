@@ -68,7 +68,43 @@ namespace DataStructures.Tests
         [Fact]
         public void Test_Add_And_Remove()
         {
+            var bst = new BinarySearchTree<int>(IntComparer);
 
+            // add some data to BST
+            Assert.True(bst.Add(12));
+            Assert.True(bst.Add(24));
+            Assert.True(bst.Add(32));
+            Assert.True(bst.Add(8));
+            Assert.True(bst.Add(6));
+            Assert.True(bst.Add(14));
+            Assert.True(bst.Add(4));
+            Assert.True(bst.Add(1));
+
+            // BST should keep only one item at a time
+            Assert.False(bst.Add(1));
+
+            // Check that one item is contained
+            Assert.True(bst.Contains(6));
+
+            // Get depth:
+            var dept = bst.Depth;
+
+            // Remove it
+            bst.Remove(6);
+
+            Assert.False(bst.Contains(6));
+
+            // Remove other items from the tree
+            bst.Remove(8);
+            bst.Remove(12);
+            bst.Remove(14);
+
+            // Check that depth should be changed
+            Assert.NotEqual(dept, bst.Depth);
+
+            // Check tree content
+            var inOrder = bst.Flatten().ToArray();
+            Assert.Equal(new int[] { 1, 4, 24, 32 }, inOrder);
         }
     }
 }

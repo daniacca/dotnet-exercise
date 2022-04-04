@@ -9,7 +9,7 @@ namespace DataStructure.Tree
         IBinaryTreeNode<T> Right { get; set; }
     }
  
-    public class BinaryTreeNode<T> : IBinaryTreeNode<T>
+    internal class BinaryTreeNode<T> : IBinaryTreeNode<T>
     {
         public T Data { get; set; }
 

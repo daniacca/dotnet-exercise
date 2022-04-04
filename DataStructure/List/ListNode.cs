@@ -3,12 +3,12 @@
 
 namespace DataStructure.List
 {
-    public interface IListNode<T>: INode<T>
+    public interface IListNode<T> : INode<T>
     {
         IListNode<T> Next { get; set; }
     }
 
-    public class ListNode<T> : IListNode<T>
+    internal class ListNode<T> : IListNode<T>
     {
         public T Data { get; set; } = default;
 

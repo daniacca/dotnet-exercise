@@ -25,8 +25,8 @@ namespace DataStructure.Buffer
             if (!CanWrite())
                 return false;
 
-            WriteCursor = (WriteCursor + 1) % Capacity;
             Buffer[WriteCursor] = value;
+            WriteCursor = (WriteCursor + 1) % Capacity;
             return true;
         }
 
@@ -37,8 +37,8 @@ namespace DataStructure.Buffer
 
             foreach (var value in values)
             {
-                WriteCursor = (WriteCursor + 1) % Capacity;
                 Buffer[WriteCursor] = value;
+                WriteCursor = (WriteCursor + 1) % Capacity;
             }
 
             return true;
@@ -49,8 +49,9 @@ namespace DataStructure.Buffer
             if (!CanRead())
                 throw new InvalidOperationException();
 
+            var read = Buffer[ReadCursor];
             ReadCursor = (ReadCursor + 1) % Capacity;
-            return Buffer[ReadCursor];
+            return read;
         }
 
         public IEnumerable<T> Read(int count)
@@ -60,8 +61,8 @@ namespace DataStructure.Buffer
 
             for (int i = 0; i < count; i++)
             {
-                ReadCursor = (ReadCursor + 1) % Capacity;
                 yield return Buffer[ReadCursor];
+                ReadCursor = (ReadCursor + 1) % Capacity;
             }
 
             yield break;
@@ -78,14 +79,26 @@ namespace DataStructure.Buffer
         private bool CanWrite(int howMuch = 1)
         {
             var counter = 1;
-            while((WriteCursor + counter) % Capacity != ReadCursor) counter++;
+            
+            while ((WriteCursor + counter) % Capacity != ReadCursor)
+            {
+                counter++;
+                if (counter == howMuch) break;
+            }
+
             return counter == howMuch;
         }
 
         private bool CanRead(int howMuch = 1)
         {
             var counter = 1;
-            while ((ReadCursor + counter) % Capacity != WriteCursor) counter++;
+            
+            while ((ReadCursor + counter) % Capacity != WriteCursor)
+            {
+                counter++;
+                if (counter == howMuch) break;
+            }
+
             return counter == howMuch;
         }
     }
