@@ -22,17 +22,14 @@ namespace Utils.ExtensionMethods.IEnumerable
             arr[j] = temp;
         }
 
-        private static IEnumerable<T> InsertionSort<T>(this IEnumerable<T> sequence, Func<T, T, int> comparer)
+        private static IEnumerable<T> Insertion<T>(this IEnumerable<T> sequence, Func<T, T, int> comparer)
         {
             void InsSort(T[] a, int n)
             {
-                // Base case
                 if (n <= 1) return;
 
-                // Sort first n-1 elements
                 InsSort(a, n - 1);
 
-                // Insert last element at its correct position in sorted array
                 T last = a[n - 1];
                 int j = n - 2;
                 while (j >= 0 && comparer(a[j], last) > 0)
@@ -49,7 +46,7 @@ namespace Utils.ExtensionMethods.IEnumerable
             return arr;
         }
 
-        private static IEnumerable<T> MergeSort<T>(this IEnumerable<T> sequence, Func<T, T, int> comparer)
+        private static IEnumerable<T> Merge<T>(this IEnumerable<T> sequence, Func<T, T, int> comparer)
         {
             T[] Merge(T[] l, T[] r)
             {
@@ -57,8 +54,6 @@ namespace Utils.ExtensionMethods.IEnumerable
                 var right = new Queue<T>(r);
 
                 var merged = new List<T>(l.Length + r.Length);
-
-                // Merge left and right with correct order
                 while (left.Count > 0 && right.Count > 0)
                 {
                     if (comparer(left.Peek(), right.Peek()) < 0)
@@ -67,11 +62,9 @@ namespace Utils.ExtensionMethods.IEnumerable
                         merged.Add(right.Dequeue());
                 }
 
-                // Add any remaning items on left queue
                 if (left.Any())
                     merged.AddRange(left);
 
-                // Add any remaining items on right queu
                 if (right.Any())
                     merged.AddRange(right);
 
@@ -84,7 +77,7 @@ namespace Utils.ExtensionMethods.IEnumerable
                     return array;
 
                 int half = array.Length / 2;
-                var left = array.Skip(0).Take(half).ToArray();
+                var left = array.Take(half).ToArray();
                 var rigth = array.Skip(half).ToArray();
                 return Merge(MergeSort(left), MergeSort(rigth));
             }
@@ -93,7 +86,7 @@ namespace Utils.ExtensionMethods.IEnumerable
             return MergeSort(array);
         }
 
-        private static IEnumerable<T> BubbleSort<T>(this IEnumerable<T> sequence, Func<T, T, int> comparer)
+        private static IEnumerable<T> Bubble<T>(this IEnumerable<T> sequence, Func<T, T, int> comparer)
         {
             IEnumerable<T> Bubble(T[] arr, int n)
             {
@@ -110,7 +103,7 @@ namespace Utils.ExtensionMethods.IEnumerable
             return Bubble(array, array.Length);
         }
 
-        private static IEnumerable<T> QuickSort<T>(this IEnumerable<T> sequence, Func<T, T, int> comparer)
+        private static IEnumerable<T> Quick<T>(this IEnumerable<T> sequence, Func<T, T, int> comparer)
         {
             int partition(T[] arr, int low, int high)
             {
@@ -145,7 +138,7 @@ namespace Utils.ExtensionMethods.IEnumerable
             return array;
         }
 
-        private static IEnumerable<T> HeapSort<T>(this IEnumerable<T> sequence, Func<T, T, int> comparer)
+        private static IEnumerable<T> Heap<T>(this IEnumerable<T> sequence, Func<T, T, int> comparer)
         {
             void heapify(T[] arr, int n, int i)
             {
@@ -153,15 +146,12 @@ namespace Utils.ExtensionMethods.IEnumerable
                 int left = 2 * i + 1;
                 int right = 2 * i + 2;
 
-                // If left child is larger than root
                 if (left < n && comparer(arr[left], arr[largest]) > 0)
                     largest = left;
 
-                // If right child is larger than largest so far
                 if (right < n && comparer(arr[right], arr[largest]) > 0)
                     largest = right;
 
-                // If largest is not root
                 if (largest != i)
                 {
                     Swap(arr, i, largest);
@@ -171,17 +161,12 @@ namespace Utils.ExtensionMethods.IEnumerable
 
             void sort(T[] arr, int n)
             {
-                // Build heap
                 for (int i = n / 2 - 1; i >= 0; i--)
                     heapify(arr, n, i);
 
-                // One by one extract an element from heap
                 for (int i = n - 1; i > 0; i--)
                 {
-                    // Move current root to end
                     Swap(arr, 0, i);
-
-                    // Call max heapify on the reduced heap
                     heapify(arr, i, 0);
                 }
             }
@@ -210,11 +195,11 @@ namespace Utils.ExtensionMethods.IEnumerable
         {
             return strategy switch
             {
-                SortingStrategy.bubble => sequence.BubbleSort(comparer),
-                SortingStrategy.insertion => sequence.InsertionSort(comparer),
-                SortingStrategy.merge => sequence.MergeSort(comparer),
-                SortingStrategy.quick => sequence.QuickSort(comparer),
-                SortingStrategy.heap => sequence.HeapSort(comparer),
+                SortingStrategy.bubble => sequence.Bubble(comparer),
+                SortingStrategy.insertion => sequence.Insertion(comparer),
+                SortingStrategy.merge => sequence.Merge(comparer),
+                SortingStrategy.quick => sequence.Quick(comparer),
+                SortingStrategy.heap => sequence.Heap(comparer),
                 _ => throw new NotImplementedException(),
             };
         }

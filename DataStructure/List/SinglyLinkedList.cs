@@ -7,10 +7,10 @@ namespace DataStructure.List
     public class SinglyLinkedList<T> : IEnumerable<T>, ICollection<T>
     {
         IListNode<T> Head { get; set; } = null;
+        
+        IListNode<T> Tail => GetNode(Count - 1);
 
         public int Count { get; private set; } = 0;
-
-        IListNode<T> Tail => GetNode(Count - 1);
 
         public bool IsReadOnly => false;
 
@@ -21,8 +21,7 @@ namespace DataStructure.List
 
         public SinglyLinkedList(T head)
         {
-            Head = new ListNode<T>(head);
-            Count = 1;
+            Add(head);
         }
 
         public SinglyLinkedList(IEnumerable<T> anotherList)
@@ -39,6 +38,28 @@ namespace DataStructure.List
         public void AddAtTail(T value)
         {
             Tail.Next = new ListNode<T>(value);
+            Count++;
+        }
+
+        public void Add(T value, int index)
+        {
+            if (index < 0 && index > Count)
+                throw new IndexOutOfRangeException();
+
+            if (Head is null || index is 0)
+            {
+                Add(value);
+                return;
+            }
+
+            if(index == Count)
+            {
+                AddAtTail(value);
+                return;
+            }
+
+            var before = GetNode(index - 1);
+            before.Next = new ListNode<T>(value, before.Next);
             Count++;
         }
 
@@ -143,41 +164,12 @@ namespace DataStructure.List
             return Loop(Head);
         }
 
-        public T[] ToArray()
-        {
-            var arr = new T[Count];
-
-            var node = Head;
-            for (int i = 0; i < Count; i++)
-            {
-                arr[i] = node.Data;
-                node = node.Next;
-            }
-
-            return arr;
-        }
-
-        public List<T> ToList()
-        {
-            var list = new List<T>(Count);
-            var node = Head;
-
-            while (node is not null)
-            {
-                list.Add(node.Data);
-                node = node.Next;
-            }
-
-            return list;
-        }
-
         public void CopyTo(T[] array, int arrayIndex)
         {
-            int i = arrayIndex;
             var current = Head;
             while (current is not null)
             {
-                array[i++] = current.Data;
+                array[arrayIndex++] = current.Data;
                 current = current.Next;
             }
         }

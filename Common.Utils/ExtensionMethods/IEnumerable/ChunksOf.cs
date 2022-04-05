@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Utils.ExtensionMethods.IEnumerable
 {
@@ -24,6 +25,11 @@ namespace Utils.ExtensionMethods.IEnumerable
                     chunk = new List<T>(size);
                 }
             }
+
+            if (chunk.Any())
+                yield return chunk;
+
+            yield break;
         }
     }
 }

@@ -14,9 +14,10 @@ namespace Utils.ExtensionMethods.IEnumerable
 
     public static class SearchExtensions
     {
-        private static int LinearSearch<T>(this IEnumerable<T> sequence, T key, Func<T, T, int> comparer)
+        private static int Linear<T>(this IEnumerable<T> sequence, T key, Func<T, T, int> comparer)
         {
             var index = -1;
+
             foreach (T item in sequence)
             {
                 index++;
@@ -27,7 +28,7 @@ namespace Utils.ExtensionMethods.IEnumerable
             return -1;
         }
 
-        private static int JumpSearch<T>(this IEnumerable<T> sequence, T key, Func<T, T, int> comparer)
+        private static int Jump<T>(this IEnumerable<T> sequence, T key, Func<T, T, int> comparer)
         {
             var length = sequence.Count();
             int jumpStep = (int)Math.Sqrt(length);
@@ -41,10 +42,10 @@ namespace Utils.ExtensionMethods.IEnumerable
                     return -1;
             }
 
-            return sequence.Skip(start).Take(end - start).LinearSearch(key, comparer);
+            return sequence.Skip(start).Take(end - start).Linear(key, comparer);
         }
 
-        private static int BinarySearch<T>(this IEnumerable<T> sequence, T key, Func<T, T, int> comparer)
+        private static int Binary<T>(this IEnumerable<T> sequence, T key, Func<T, T, int> comparer)
         {
             int search(IEnumerable<T> arr, int low, int high)
             {
@@ -66,7 +67,7 @@ namespace Utils.ExtensionMethods.IEnumerable
             return search(sequence, 0, sequence.Count() - 1);
         }
 
-        private static int ExponentialSearch<T>(this IEnumerable<T> sequence, T key, Func<T, T, int> comparer)
+        private static int Exponential<T>(this IEnumerable<T> sequence, T key, Func<T, T, int> comparer)
         {
             if (comparer(sequence.ElementAt(0), key) == 0)
                 return 0;
@@ -75,17 +76,17 @@ namespace Utils.ExtensionMethods.IEnumerable
             while (i < n && comparer(sequence.ElementAt(i), key) <= 0)
                 i *= 2;
 
-            return sequence.Skip(i / 2).Take(Math.Min(i, n - 1) - (i / 2)).BinarySearch(key, comparer);
+            return sequence.Skip(i / 2).Take(Math.Min(i, n - 1) - (i / 2)).Binary(key, comparer);
         }
 
         public static int Search<T>(this IEnumerable<T> sequence, SearchStrategy strategy, T element, Func<T, T, int> comparer)
         {
             return strategy switch
             {
-                SearchStrategy.linear => sequence.LinearSearch(element, comparer),
-                SearchStrategy.jump => sequence.JumpSearch(element, comparer),
-                SearchStrategy.binary => sequence.BinarySearch(element, comparer),
-                SearchStrategy.exponential => sequence.ExponentialSearch(element, comparer),
+                SearchStrategy.linear => sequence.Linear(element, comparer),
+                SearchStrategy.jump => sequence.Jump(element, comparer),
+                SearchStrategy.binary => sequence.Binary(element, comparer),
+                SearchStrategy.exponential => sequence.Exponential(element, comparer),
                 _ => throw new NotImplementedException()
             };
         }
