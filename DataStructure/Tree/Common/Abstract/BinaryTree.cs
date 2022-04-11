@@ -1,78 +1,46 @@
-﻿using System;
+﻿using DataStructure.Tree.Common.Interfaces;
+using DataStructure.Tree.Common.Types;
+using System;
 using System.Collections.Generic;
 
-namespace DataStructure.Tree
+namespace DataStructure.Tree.Common.Abstract
 {
-    public class BinarySearchTree<T> : IBinarySearchTree<T>
+    public abstract class BinaryTree<T> : IBinaryTree<T>
     {
-        IBinaryTreeNode<T> Root { get; set; } = null;
+        protected IBinaryTreeNode<T> Root { get; set; }
+
+        protected Func<T, T, int> Comparer { get; }
 
         public T Min => MinValue(Root);
 
         public T Max => MaxValue(Root);
 
-        public int Depth => GetTreeDepth(Root);
+        public int Depth => GetDepth(Root);
 
-        private Func<T, T, int> Comparer { get; }
-
-        #region ctor
-        public BinarySearchTree(Func<T, T, int> comparer)
+        protected BinaryTree(Func<T, T, int> comparer)
         {
             Comparer = comparer;
         }
 
-        public BinarySearchTree(Func<T, T, int> comparer, T value)
-        {
-            Comparer = comparer;
-            Root = new BinaryTreeNode<T>(value);
-        }
+        #region abstract
+        public abstract void Add(T value);
+
+        public abstract void Remove(T value);
         #endregion
 
-        #region Public method
-        public bool Add(T value)
-        {
-            if (Root is null)
-            {
-                Root = new BinaryTreeNode<T>(value);
-                return true;
-            }
-
-            var before = FindBefore(value);
-            if (before is null) 
-                return false;
-
-            var newNode = new BinaryTreeNode<T>(value);
-            if (Comparer(value, before.Data) < 0)
-                before.Left = newNode;
-            else
-                before.Right = newNode;
-
-            return true;
-        }
-
-        public void Add(IEnumerable<T> values)
-        {
-            foreach (var value in values)
-                Add(value);
-        }
-
-        public void Remove(T value)
-        {
-            Root = Remove(Root, value);
-        }
-
+        #region public method
         public bool Contains(T value)
         {
-            bool Loop(IBinaryTreeNode<T> currentNode)
+            bool Loop(IBinaryTreeNode<T> node)
             {
-                if (currentNode is null)
+                if (node is null)
                     return false;
-                else if (Comparer(value, currentNode.Data) == 0)
+                else if (Comparer(value, node.Data) == 0)
                     return true;
-                else if (Comparer(value, currentNode.Data) < 0)
-                    return Loop(currentNode.Left);
+                else if (Comparer(value, node.Data) < 0)
+                    return Loop(node.Left);
                 else
-                    return Loop(currentNode.Right);
+                    return Loop(node.Right);
             }
 
             return Loop(Root);
@@ -174,67 +142,29 @@ namespace DataStructure.Tree
         }
         #endregion
 
-        #region Private method
-        private int GetTreeDepth(IBinaryTreeNode<T> parent)
+        #region protected method
+        protected static int GetDepth(IBinaryTreeNode<T> parent)
         {
-            return parent == null ? 0 : Math.Max(GetTreeDepth(parent.Left), GetTreeDepth(parent.Right)) + 1;
+            return parent == null ? 0 : Math.Max(GetDepth(parent.Left), GetDepth(parent.Right)) + 1;
         }
 
-        private IBinaryTreeNode<T> FindBefore(T value)
-        {
-            IBinaryTreeNode<T> before = null, after = Root;
-            while (after != null)
-            {
-                before = after;
-                if (Comparer(value, after.Data) < 0)
-                    after = after.Left;
-                else if (Comparer(value, after.Data) > 0)
-                    after = after.Right;
-                else
-                    return null;
-            }
-
-            return before;
-        }
-
-        private IBinaryTreeNode<T> Remove(IBinaryTreeNode<T> parent, T value)
-        {
-            if (parent == null) return parent;
-
-            if (Comparer(value, parent.Data) < 0) parent.Left = Remove(parent.Left, value);
-            else if (Comparer(value, parent.Data) > 0) parent.Right = Remove(parent.Right, value);
-            else
-            {
-                if (parent.Left is null)
-                    return parent.Right;
-
-                if (parent.Right is null)
-                    return parent.Left;
-
-                parent.Data = MinValue(parent.Right);
-                parent.Right = Remove(parent.Right, parent.Data);
-            }
-
-            return parent;
-        }
-
-        private static T MinValue(IBinaryTreeNode<T> node)
+        protected static T MinValue(IBinaryTreeNode<T> node)
         {
             if (node is null)
                 return default;
 
-            while (node.Left != null)
+            while (node.Left is not null)
                 node = node.Left;
 
             return node.Data;
         }
 
-        private static T MaxValue(IBinaryTreeNode<T> node)
+        protected static T MaxValue(IBinaryTreeNode<T> node)
         {
             if (node is null)
                 return default;
 
-            while (node.Right != null)
+            while (node.Right is not null)
                 node = node.Right;
 
             return node.Data;

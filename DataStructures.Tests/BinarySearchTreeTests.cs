@@ -1,4 +1,5 @@
-using DataStructure.Tree;
+using DataStructure.Tree.BST;
+using DataStructure.Tree.Common.Types;
 using System;
 using System.Linq;
 using Xunit;
@@ -17,7 +18,8 @@ namespace DataStructures.Tests
             Assert.Equal(0, bst.Depth);
 
             // Add a Root node
-            Assert.True(bst.Add(5));
+            bst.Add(5);
+            
             Assert.Equal(1, bst.Depth);
             Assert.True(bst.Contains(5));
             Assert.False(bst.Contains(15));
@@ -35,12 +37,12 @@ namespace DataStructures.Tests
             var bst = new BinarySearchTree<int>(IntComparer, 5);
             
             // Add two node on the Left from root
-            Assert.True(bst.Add(4));
-            Assert.True(bst.Add(1));
+            bst.Add(4);
+            bst.Add(1);
 
             // Add two node on the right from root
-            Assert.True(bst.Add(8));
-            Assert.True(bst.Add(9));
+            bst.Add(8);
+            bst.Add(9);
 
             Assert.Equal(3, bst.Depth);
             Assert.Equal(1, bst.Min);
@@ -71,17 +73,17 @@ namespace DataStructures.Tests
             var bst = new BinarySearchTree<int>(IntComparer);
 
             // add some data to BST
-            Assert.True(bst.Add(12));
-            Assert.True(bst.Add(24));
-            Assert.True(bst.Add(32));
-            Assert.True(bst.Add(8));
-            Assert.True(bst.Add(6));
-            Assert.True(bst.Add(14));
-            Assert.True(bst.Add(4));
-            Assert.True(bst.Add(1));
+            bst.Add(12);
+            bst.Add(24);
+            bst.Add(32);
+            bst.Add(8);
+            bst.Add(6);
+            bst.Add(14);
+            bst.Add(4);
+            bst.Add(1);
 
             // BST should keep only one item at a time
-            Assert.False(bst.Add(1));
+            bst.Add(1);
 
             // Check that one item is contained
             Assert.True(bst.Contains(6));
