@@ -13,13 +13,15 @@ namespace DataStructure.Graph
         public int Vertexs { get; private set; } = 0;
         public int Edges { get; private set; } = 0;
 
-        public void AddVertex(T s)
+        public bool AddVertex(T s)
         {
-            adjacencyList.Add(s, new HashSet<T>());
-            Vertexs++;
+            var added = adjacencyList.TryAdd(s, new HashSet<T>());
+            if(added)
+                Vertexs++;
+            return added;
         }
 
-        public void AddEdge(T source, T destination, bool bidirectional = true)
+        public bool AddEdge(T source, T destination, bool bidirectional = true)
         {
             if (!adjacencyList.ContainsKey(source))
                 AddVertex(source);
@@ -27,11 +29,14 @@ namespace DataStructure.Graph
             if (!adjacencyList.ContainsKey(destination))
                 AddVertex(destination);
 
-            adjacencyList[source].Add(destination);
+            bool added = adjacencyList[source].Add(destination);
             if (bidirectional)
-                adjacencyList[destination].Add(source);
+                added = adjacencyList[destination].Add(source);
 
-            Edges++;
+            if(added)
+                Edges++;
+
+            return added;
         }
 
         public bool RemoveEdge(T source, T destination)
@@ -59,11 +64,12 @@ namespace DataStructure.Graph
             var removed = false;
 
             if(adjacencyList.ContainsKey(vertex))
-                removed |= adjacencyList.Remove(vertex);
+                removed = adjacencyList.Remove(vertex);
 
             foreach (var v in adjacencyList)
             {
-                v.Value.Remove(vertex);
+                if(v.Value.Remove(vertex))
+                    Edges--;
             }
 
             if(removed)
@@ -72,9 +78,16 @@ namespace DataStructure.Graph
             return removed;
         }
 
+        public bool Contain(T vertex)
+        {
+            return adjacencyList.ContainsKey(vertex);
+        }
+
         public void Clear()
         {
             adjacencyList.Clear();
+            Edges = 0;
+            Vertexs = 0;
         }
 
         private bool DFS(T start, T goal, HashSet<T> visited)
@@ -85,14 +98,10 @@ namespace DataStructure.Graph
             foreach (var destination in destinations)
             {
                 if (destination.Equals(goal))
-                {
                     return true;
-                }
 
                 if (!visited.Contains(destination))
-                {
                     return DFS(destination, goal, visited);
-                }
             }
 
             return false;
@@ -108,10 +117,7 @@ namespace DataStructure.Graph
             var queue = new Queue<T>();
             queue.Enqueue(start);
 
-            var visited = new HashSet<T>
-            {
-                start
-            };
+            var visited = new HashSet<T> { start };
 
             while (queue.Count > 0)
             {
@@ -137,10 +143,7 @@ namespace DataStructure.Graph
         private bool DistanceBFS(T src, T goal, Dictionary<T, T> pred, Dictionary<T, int> dist)
         {
             var queue = new Queue<T>();
-            var visited = new HashSet<T>
-            {
-                src
-            };
+            var visited = new HashSet<T> { src };
 
             dist[src] = 0;
             queue.Enqueue(src);
@@ -157,8 +160,7 @@ namespace DataStructure.Graph
                         visited.Add(destination);
                         pred[destination] = u;
 
-                        var prevDistance = 0;
-                        dist.TryGetValue(u, out prevDistance);
+                        dist.TryGetValue(u, out int prevDistance);
                         dist[destination] = prevDistance + 1;
 
                         queue.Enqueue(destination);
@@ -176,10 +178,10 @@ namespace DataStructure.Graph
         {
             var output = new List<(T s, T d)>();
 
-            for (int i = 0; i < visited.Count - 1; i++)
+            for (int i = visited.Count - 1; i > 0; i--)
             {
                 var s = visited[i];
-                var d = visited[i + 1];
+                var d = visited[i - 1];
                 output.Add((s, d));
             }
 
@@ -192,12 +194,10 @@ namespace DataStructure.Graph
             var dist = new Dictionary<T, int>();
 
             if (!DistanceBFS(start, goal, pred, dist))
-            {
                 return Enumerable.Empty<(T s, T d)>().ToArray();
-            }
 
             var path = new List<T>();
-            T crawl = goal;
+            var crawl = goal;
             path.Add(crawl);
 
             while (pred.ContainsKey(crawl))
